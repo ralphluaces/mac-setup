@@ -1,0 +1,63 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+format = "$username$hostname$directory$git$git_branch$terraform$kubernetes$time$status$all"
+ 
+
+[kubernetes]
+disabled = false
+format = '[$symbol$context( \($namespace\))]($style) '
+style = "bright-blue bold"
+
+[character] # The name of the module we are configuring is "character"
+success_symbol = "[\\$](bold green)"
+
+[terraform]
+style = "bold 105"
+format = "tf:[$workspace]($style) "
+
+[git_branch]
+symbol = ""
+style = "bold purple"
+format = "[$symbol $branch(:$remote_branch)]($style) "
+
+[git_status]
+disabled = true
+
+[directory]
+truncation_length = 8
+truncation_symbol = "~/"
+
+[username]
+style_user = "green bold"
+style_root = "red bold"
+format = "[$user]($style)"
+disabled = false
+show_always = true
+
+[gcloud]
+disabled = true
+
+[hostname]
+ssh_only = false
+format = "@[$hostname](bold blue) "
+trim_at = ""
+disabled = false
+
+[time]
+disabled = false
+style = "none"
+format = '[\[$time\]]($style) '
+time_format = "%T"
+utc_time_offset = "-5"
+
+[status]
+style = "none"
+symbol = "🔴 "
+success_symbol = "🟢 SUCCESS"
+format = '[\[$int\]]($style) '
+map_symbol = true
+disabled = false
