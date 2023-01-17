@@ -12,6 +12,17 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     defaults write com.apple.dock autohide -int 1
     # remove dock hide delay
     defaults write com.apple.Dock autohide-delay -float 0.0001; killall Dock
+    # disable recent applications
+    defaults write com.apple.dock show-recents -bool FALSE
+
+    #Enable tap to click
+    defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+    sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+    sudo defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+    sudo defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+    
+    # Dark Mode
+    osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
 
     # Enable battery Percent
     defaults write ${HOME}/Library/Preferences/ByHost/com.apple.controlcenter.plist BatteryShowPercentage -bool true
