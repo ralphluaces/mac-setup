@@ -4,9 +4,17 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # install brew
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+    # setup brew for use
+    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> ${HOME}/.zprofile\
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ${HOME}/.zprofile\
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
     # install software I use
     brew update
-    brew install starship git bash htop
+    brew install starship git bash htop copyq ripgrep scroll-reverser
+
+    mkdir -p ${HOME}/.config
+    cp starship.toml ${HOME}/.config/
 
     # Enable Dock Autohide
     defaults write com.apple.dock autohide -int 1
@@ -16,7 +24,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     defaults write com.apple.dock show-recents -bool FALSE
 
     #Enable tap to click
-    defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+    sudo defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
     sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
     sudo defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
     sudo defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
