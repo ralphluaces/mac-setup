@@ -28,6 +28,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
     sudo defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
     sudo defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+    # show the full path in Finder
+    defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES
     
     # Dark Mode
     osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
@@ -43,7 +46,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
       "Activity Monitor" \
       "SystemUIServer" \
       "Dock" \
-      "NotificationCenter"
+      "NotificationCenter" \
+      "Finder"
     do
 	killall "${APP}" &> /dev/null
     done
