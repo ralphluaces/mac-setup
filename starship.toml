@@ -1,35 +1,11 @@
-# Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Inserts a blank line between shell prompts
 add_newline = true
 
-format = "$username$hostname$directory$git$git_branch$terraform$kubernetes$time$status$all"
- 
+format = "$username$hostname$directory$git_branch$git_status$terraform$kubernetes${custom.aws}$time$status$all"
 
-[kubernetes]
-disabled = false
-format = '[$symbol$context( \($namespace\))]($style) '
-style = "bright-blue bold"
-
-[character] # The name of the module we are configuring is "character"
+[character]
 success_symbol = "[\\$](bold green)"
-
-[terraform]
-style = "bold 105"
-format = "tf:[$workspace]($style) "
-
-[git_branch]
-symbol = ""
-style = "bold purple"
-format = "[$symbol $branch(:$remote_branch)]($style) "
-
-[git_status]
-disabled = true
-
-[directory]
-truncation_length = 8
-truncation_symbol = "~/"
 
 [username]
 style_user = "green bold"
@@ -38,26 +14,75 @@ format = "[$user]($style)"
 disabled = false
 show_always = true
 
-[gcloud]
-disabled = true
-
 [hostname]
 ssh_only = false
 format = "@[$hostname](bold blue) "
 trim_at = ""
 disabled = false
 
+[directory]
+truncation_length = 8
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = ""
+style = "bold purple"
+format = "[$symbol $branch(:$remote_branch)]($style) "
+
+[git_status]
+style = "bold color(211)"
+format = '([$all_status$ahead_behind]($style) )'
+ahead = "↑"
+behind = "↓"
+diverged = "↕"
+modified = "*"
+untracked = "?"
+staged = "+"
+deleted = "✘"
+
+[terraform]
+style = "bold 105"
+format = "tf:[$workspace]($style) "
+
+[kubernetes]
+disabled = false
+format = '[$symbol$context( \($namespace\))]($style) '
+style = "bright-blue bold"
+
+[aws]
+disabled = true
+
+[custom.aws]
+command = "python3 ~/.config/aws-prompt.py"
+when = true
+format = '[($output )]($style)'
+style = "bold color(208)"
+
+[python]
+disabled = false
+format = 'py:[$virtualenv]($style) '
+style = "bold green"
+detect_files = ["requirements.txt", "pyproject.toml", ".python-version"]
+detect_extensions = []
+
+[nodejs]
+disabled = false
+format = 'node:[$version]($style) '
+style = "bold green"
+detect_files = [".nvmrc", "package.json"]
+
+[gcloud]
+disabled = true
+
 [time]
 disabled = false
 style = "none"
 format = '[\[$time\]]($style) '
 time_format = "%T"
-utc_time_offset = "-5"
 
 [status]
 style = "none"
 symbol = "🔴 "
-success_symbol = "🟢 SUCCESS"
 format = '[\[$int\]]($style) '
 map_symbol = true
 disabled = false
