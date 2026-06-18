@@ -40,8 +40,8 @@ alias gl="git log --pretty=fuller"
 alias gitlog="git log --pretty=fuller"
 alias gcm="git checkout master"
 alias gcmp="git checkout main&&git pull"
-alias cdgr="cd ~/toast/git-repos"
-alias cdgd="cd ~/toast/git-repos"
+alias cdgr="cd __GIT_DIR__"
+alias cdgd="cd __GIT_DIR__"
 alias gp="git pull"
 alias gn="git checkout -b"
 alias grm="git rebase master"
@@ -88,5 +88,7 @@ npx() { unfunction nvm node npm npx; [ -s "$(brew --prefix nvm)/nvm.sh" ] && sou
 export PATH="$HOME/.local/bin:$PATH"
 
 ssh-add -l &>/dev/null || ssh-add --apple-use-keychain 2>/dev/null
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 eval "$(starship init zsh)"

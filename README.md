@@ -21,6 +21,18 @@ cd mac-setup
 
 You will be prompted to confirm before anything runs.
 
+### Options
+
+| Flag | Description |
+|------|-------------|
+| *(none)* | Full setup: Homebrew, packages, config files, system preferences, shell config |
+| `--brew` | Install/update Homebrew and packages only |
+| `--shell` | Update `~/.zshrc` and `~/.zprofile` managed blocks only |
+| `--nosudo` | Skip steps that require sudo (trackpad tap-to-click, Touch ID for sudo) |
+| `--root` | Already running as root — disables internal `sudo` calls. Use as: `sudo ./setup.sh --root` |
+| `--git-dir=PATH` | Set the git repos directory used for `cdgr`/`cdgd` aliases (prompted if not set, default: `~`) |
+| `--help` | Show usage |
+
 ## Re-running
 
 The script is idempotent and safe to re-run. Shell config files (`~/.zshrc`, `~/.zprofile`) use managed blocks:
