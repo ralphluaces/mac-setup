@@ -349,6 +349,7 @@ if ! $SHELL_ONLY && [[ "$OSTYPE" == "darwin"* ]]; then
     brew_spin "Updating Homebrew" run_as_user brew update
     brew_spin "Installing formulae" run_as_user brew install starship git bash htop ripgrep zsh-autosuggestions fzf gh jq tree watch awscli tfenv nvm
     brew_spin "Installing casks" run_as_user brew install --cask --force ghostty maccy stats obsidian visual-studio-code tailscale scroll-reverser
+    xattr -dr com.apple.quarantine /Applications/Stats.app 2>/dev/null || true
     spin "Configuring fzf key bindings" run_as_user "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
 fi
 
