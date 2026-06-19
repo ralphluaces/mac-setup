@@ -239,6 +239,7 @@ _cfg_finder() {
     run_as_user defaults write com.apple.finder FXICloudDriveDesktop -bool false
     run_as_user defaults write com.apple.finder FXICloudDriveDocuments -bool false
     run_as_user defaults write com.apple.finder AppleShowAllFiles -bool true
+    run_as_user defaults write NSGlobalDomain AppleShowAllExtensions -bool true
     run_as_user defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
     # Show Macintosh HD in Finder sidebar Locations section
     run_as_user defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
