@@ -131,18 +131,18 @@ spin() {
 
     # Animation goes to /dev/tty only — never touches the log
     while kill -0 $pid 2>/dev/null; do
-        printf "\r  \033[1;34m%s\033[0m  %s" "${frames[$((i % 10))]}" "$label" >/dev/tty
+        printf "\r  \033[1;34m%s\033[0m  %s" "${frames[$((i % 10 + 1))]}" "$label" >/dev/tty
         i=$((i + 1))
         sleep 0.08
     done
-    printf "\r\033[2K" >/dev/tty  # clear spinner line before printing final status to stdout
-
     wait $pid
     local exit_code=$?
     if [[ $exit_code -eq 0 ]]; then
-        printf "\033[1;32m  ✓\033[0m  %s\n" "$label"
+        printf "\r\033[2K\033[1;32m  ✓\033[0m  %s\n" "$label" >/dev/tty
+        printf "  ✓  %s\n" "$label" >>"$LOGFILE"
     else
-        printf "\033[1;31m  ✗\033[0m  %s (see mac-setup.log)\n" "$label"
+        printf "\r\033[2K\033[1;31m  ✗\033[0m  %s (see mac-setup.log)\n" "$label" >/dev/tty
+        printf "  ✗  %s (see mac-setup.log)\n" "$label" >>"$LOGFILE"
         return $exit_code
     fi
 }
@@ -175,7 +175,7 @@ brew_spin() {
                 printf "\033[2K    \033[2m%.120s\033[0m\n" "$line"
             done
             printf "\033[$((ROWS+1))A\r  \033[1;34m%s\033[0m  %-50s\033[${ROWS}B\n" \
-                "${frames[$((i % 10))]}" "$label"
+                "${frames[$((i % 10 + 1))]}" "$label"
         } >/dev/tty
     }
 
@@ -275,6 +275,53 @@ _cfg_menubar() {
     # Maccy popup shortcut: Cmd+` (carbonModifiers=4096 = Cmd, carbonKeyCode=50 = `)
     run_as_user defaults write org.p0deje.Maccy "KeyboardShortcuts_popup" -string '{"carbonModifiers":4096,"carbonKeyCode":50}'
 }
+_cfg_stats() {
+    local d="eu.exelban.Stats"
+    # CPU
+    run_as_user defaults write $d CPU_widget            -string "line_chart"
+    run_as_user defaults write $d CPU_line_chart_color  -string "black"
+    run_as_user defaults write $d CPU_line_chart_value  -bool   false
+    run_as_user defaults write $d CPU_processes         -int    5
+    run_as_user defaults write $d CPU_updateInterval    -int    5
+    run_as_user defaults write $d CPU_updateTopInterval -int    30
+    # GPU
+    run_as_user defaults write $d GPU_state              -bool  true
+    run_as_user defaults write $d GPU_widget             -string "line_chart"
+    run_as_user defaults write $d GPU_line_chart_color   -string "monochrome"
+    run_as_user defaults write $d GPU_line_chart_label   -bool  true
+    run_as_user defaults write $d GPU_tachometer_label   -bool  true
+    run_as_user defaults write $d GPU_tachometer_monochrome -bool true
+    run_as_user defaults write $d GPU_updateInterval     -int   10
+    # RAM
+    run_as_user defaults write $d RAM_state           -bool  true
+    run_as_user defaults write $d RAM_widget          -string "bar_chart"
+    run_as_user defaults write $d RAM_bar_chart_color -string "monochrome"
+    run_as_user defaults write $d RAM_updateInterval  -int   15
+    run_as_user defaults write $d RAM_updateTopInterval -int  30
+    # Network
+    run_as_user defaults write $d Network_speed_icon           -string "none"
+    run_as_user defaults write $d Network_speed_mode           -string "twoRows"
+    run_as_user defaults write $d Network_speed_monochrome     -bool   true
+    run_as_user defaults write $d Network_speed_valueAlignment -string "center"
+    run_as_user defaults write $d Network_speed_valueColor     -string "none"
+    # Clock (enabled with UTC sensor, format HH:mm:ss 'UTC')
+    run_as_user defaults write $d Clock_state  -bool   true
+    run_as_user defaults write $d Clock_widget -string "sensors"
+    run_as_user defaults write $d Clock_list   -data   \
+        "$(printf '%s' '[{"enabled":true,"name":"Local time","format":"HH:mm:ss '"'"'UTC'"'"'","tz":"0","id":"49E304DD-2EC4-4FCD-9F35-4E61445469F9"}]' | xxd -p | tr -d '\n')"
+    # Disk — disabled
+    run_as_user defaults write $d Disk_state -bool false
+    # Battery / Bluetooth / Sensors — widgets off
+    run_as_user defaults write $d Battery_widget   -string ""
+    run_as_user defaults write $d Bluetooth_widget -string ""
+    run_as_user defaults write $d Sensors_widget   -string ""
+    # Global
+    run_as_user defaults write $d LaunchAtLoginNext -bool true
+    run_as_user defaults write $d telemetry         -bool false
+    run_as_user defaults write $d "update-interval" -string "Once per week"
+    # Launch in background so Stats self-registers as a login item via SMAppService
+    run_as_user open -ga "Stats"
+}
 _cfg_restart_ui() {
     for APP in 'Activity Monitor' 'SystemUIServer' 'Dock' 'NotificationCenter' 'Finder'; do
         killall "$APP" &>/dev/null
@@ -325,6 +372,7 @@ if ! $SHELL_ONLY && ! $BREW_ONLY && [[ "$OSTYPE" == "darwin"* ]]; then
         ok "Configuring trackpad"
     fi
     spin "Configuring menu bar & system UI" _cfg_menubar
+    spin "Configuring Stats" _cfg_stats
     spin "Restarting UI components" _cfg_restart_ui
 
     log "Security"
